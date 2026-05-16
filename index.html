@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure 50 Contacts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2c3e50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        #contacts-section {
+            display: none; /* Initially hidden */
+            text-align: left;
+            max-height: 80vh;
+            overflow-y: auto; /* Scrollbar if list is long */
+            padding-right: 10px;
+        }
+        input[type="password"] {
+            padding: 12px;
+            width: 85%;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 12px 25px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #2ecc71;
+        }
+        .contact-card {
+            background: #f9f9f9;
+            padding: 12px;
+            margin: 8px 0;
+            border-left: 5px solid #2980b9;
+            border-radius: 4px;
+        }
+        .contact-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        .contact-number {
+            font-size: 14px;
+            color: #555;
+            margin-top: 4px;
+        }
+        #error-msg {
+            color: #e74c3c;
+            display: none;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .logout-btn {
+            background: #e74c3c;
+            width: 100%;
+            margin-top: 20px;
+            position: sticky;
+            bottom: 0;
+        }
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="login-section">
+        <h2>Enter Password</h2>
+        <p style="color: #666; font-size: 14px;">Enter password to view your 50 secure contacts.</p>
+        <input type="password" id="passwordInput" placeholder="Password">
+        <br>
+        <button onclick="checkPassword()">Unlock</button>
+        <p id="error-msg">Incorrect Password! Try again.</p>
+    </div>
+
+    <div class="container" id="contacts-section">
+        <h2 style="text-align: center; color: #2980b9; margin-top: 0;">My Contact List</h2>
+        
+        <div id="contacts-container"></div>
+
+        <button class="logout-btn" onclick="lockContacts()">Lock Contacts</button>
+    </div>
+
+    <script>
+        // 1. Apnar password eikhane set korun
+        const mySecretPassword = "mahabub";
+
+        // 2. Eikhane 50 ta number er list dewa ache. Apni shudhu "Name" ebong "Number" gulo bodle naben.
+        const myContactsList = [
+            { name: "Name 1: Abbu", phone: "+60 11-2123 7519" },
+            { name: "Name 2: Ammu", phone: "01821967960 and 01752243002" },
+            { name: "Name 3: mahabub", phone: "01325956392" },
+            { name: "আবুল আঙ্কেল", phone: "01869-009253" },
+            { name: "আনিস কাকা", phone: "01635-772728" },
+            { name: "বাবুল মামা ভালো আনসার ঢাকা মেডিকেল ccm", phone: "+880 1729-521830" },
+            { name: "ডালিম পিজি হাসপাতাল নেতা", phone: "01914-331000" },
+            { name: "মনির ঢাকা মেডিকেল স্টাফ", phone: "01728-791550" },
+            { name: "দুলাল ঢাকা মেডিকেল দালাল", phone: "+880 1718070997" },
+            { name: "নজরুল পিজি হাসপাতাল আনসার", phone: "01751-489725" },
+            { name: "তানভীর ঢাকা মেডিকেল ভালো আনসার burn unit", phone: "01850-888000" },
+            { name: "Name 12", phone: "Number 12" },
+            { name: "Name 13", phone: "Number 13" },
+            { name: "Name 14", phone: "Number 14" },
+            { name: "Name 15", phone: "Number 15" },
+            { name: "Name 16", phone: "Number 16" },
+            { name: "Name 17", phone: "Number 17" },
+            { name: "Name 18", phone: "Number 18" },
+            { name: "Name 19", phone: "Number 19" },
+            { name: "Name 20", phone: "Number 20" },
+            { name: "Name 21", phone: "Number 21" },
+            { name: "Name 22", phone: "Number 22" },
+            { name: "Name 23", phone: "Number 23" },
+            { name: "Name 24", phone: "Number 24" },
+            { name: "Name 25", phone: "Number 25" },
+            { name: "Name 26", phone: "Number 26" },
+            { name: "Name 27", phone: "Number 27" },
+            { name: "Name 28", phone: "Number 28" },
+            { name: "Name 29", phone: "Number 29" },
+            { name: "Name 30", phone: "Number 30" },
+            { name: "Name 31", phone: "Number 31" },
+            { name: "Name 32", phone: "Number 32" },
+            { name: "Name 33", phone: "Number 33" },
+            { name: "Name 34", phone: "Number 34" },
+            { name: "Name 35", phone: "Number 35" },
+            { name: "Name 36", phone: "Number 36" },
+            { name: "Name 37", phone: "Number 37" },
+            { name: "Name 38", phone: "Number 38" },
+            { name: "Name 39", phone: "Number 39" },
+            { name: "Name 40", phone: "Number 40" },
+            { name: "Name 41", phone: "Number 41" },
+            { name: "Name 42", phone: "Number 42" },
+            { name: "Name 43", phone: "Number 43" },
+            { name: "Name 44", phone: "Number 44" },
+            { name: "Name 45", phone: "Number 45" },
+            { name: "Name 46", phone: "Number 46" },
+            { name: "Name 47", phone: "Number 47" },
+            { name: "Name 48", phone: "Number 48" },
+            { name: "Name 49", phone: "Number 49" },
+            { name: "Name 50", phone: "Number 50" }
+        ];
+
+        // List load korar function
+        function loadContacts() {
+            const container = document.getElementById("contacts-container");
+            container.innerHTML = ""; // Clear previous content
+
+            myContactsList.forEach(contact => {
+                // Jodi kono slot khali thake ba default thake seta bad dewa ba show korar logic
+                container.innerHTML += `
+                    <div class="contact-card">
+                        <div class="contact-name">${contact.name}</div>
+                        <div class="contact-number">📞 ${contact.phone}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function checkPassword() {
+            let enteredPassword = document.getElementById("passwordInput").value;
+            
+            if (enteredPassword === mySecretPassword) {
+                document.getElementById("login-section").style.display = "none";
+                document.getElementById("contacts-section").style.display = "block";
+                loadContacts(); // Password millei shudhu number load hobe
+            } else {
+                document.getElementById("error-msg").style.display = "block";
+            }
+        }
+
+        function lockContacts() {
+            document.getElementById("passwordInput").value = "";
+            document.getElementById("error-msg").style.display = "none";
+            document.getElementById("contacts-section").style.display = "none";
+            document.getElementById("login-section").style.display = "block";
+            document.getElementById("contacts-container").innerHTML = ""; // Security er jonno data clear kore dewa
+        }
+    </script>
+</body>
+</html>
